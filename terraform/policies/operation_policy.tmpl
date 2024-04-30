@@ -1,0 +1,27 @@
+<policies>
+    <inbound>
+        <base />
+        <validate-jwt header-name="Authorization" require-scheme="Bearer">
+            %{~ if strcontains((join(";", tags)), "RequiredRole")~}
+            <required-claims>
+                <claim name="roles" match="all">
+                %{~ for tag in tags ~}
+                    %{~ if strcontains(tag, "RequiredRole=") ~}
+                    <value>${substr(tag, 13, length(tag) - 1)}</value>
+                    %{~ endif ~}
+                %{~ endfor ~}
+                </claim>
+            </required-claims>
+            %{~ endif ~}
+        </validate-jwt>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

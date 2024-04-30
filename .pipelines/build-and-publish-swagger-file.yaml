@@ -1,0 +1,38 @@
+﻿trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Project'
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+      arguments: '--configuration Release'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to Artifact Directory'
+    inputs:
+      SourceFolder: 'Api/bin/Release/net8.0'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Install Swashbuckle CLI'
+    inputs:
+      command: 'custom'
+      custom: 'tool'
+      arguments: 'install --global Swashbuckle.AspNetCore.Cli'
+
+  - script: |
+      cd $(Build.ArtifactStagingDirectory)
+      swagger tofile --output swagger.json Api.dll v1
+    displayName: 'Generate Swagger File'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/swagger.json'
+      artifact: 'SwaggerDoc'
+      publishLocation: 'pipeline'
+    displayName: 'Publish Swagger Doc as Pipeline Artifact'
