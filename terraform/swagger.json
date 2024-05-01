@@ -1,0 +1,112 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Echo API",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://demo-apim-adch.azure-api.net/echo"
+        }
+    ],
+    "paths": {
+        "/resource": {
+            "get": {
+                "tags": [
+                  "RequiredRole=Admin"
+                ],
+                "summary": "Retrieve resource",
+                "description": "A demonstration of a GET call on a sample resource. It is handled by an \"echo\" backend which returns a response equal to the request (the supplied headers and body are being returned as received).",
+                "operationId": "retrieve-resource",
+                "parameters": [
+                    {
+                        "name": "param1",
+                        "in": "query",
+                        "description": "A sample parameter that is required and has a default value of \"sample\".",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "sample"
+                            ],
+                            "type": "string",
+                            "default": "sample"
+                        }
+                    },
+                    {
+                        "name": "param2",
+                        "in": "query",
+                        "description": "Another sample parameter, set to not required.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returned in all cases."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                  "RequiredRole=Contributor"
+                ],
+                "summary": "Modify Resource",
+                "description": "A demonstration of a PUT call handled by the same \"echo\" backend as above. You can now specify a request body in addition to headers and it will be returned as well.",
+                "operationId": "modify-resource",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                  "RequiredRole=Contributor"
+                ],
+                "summary": "Create resource",
+                "description": "A demonstration of a POST call based on the echo backend above. The request body is expected to contain JSON-formatted data (see example below). A policy is used to automatically transform any request sent in JSON directly to XML. In a real-world scenario this could be used to enable modern clients to speak to a legacy backend.",
+                "operationId": "create-resource",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "vehicleType": "train",
+                                "maxSpeed": 125,
+                                "avgSpeed": 90,
+                                "speedUnit": "mph"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "apiKeyHeader": {
+                "type": "apiKey",
+                "name": "Ocp-Apim-Subscription-Key",
+                "in": "header"
+            },
+            "apiKeyQuery": {
+                "type": "apiKey",
+                "name": "subscription-key",
+                "in": "query"
+            }
+        }
+    },
+    "security": [
+        {
+            "apiKeyHeader": []
+        },
+        {
+            "apiKeyQuery": []
+        }
+    ]
+}

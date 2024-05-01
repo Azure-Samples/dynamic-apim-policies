@@ -1,0 +1,22 @@
+<policies>
+    <inbound>
+      <base />        
+    </inbound>
+    <backend>
+        <retry
+            condition="@(context.Response.StatusCode == 500)"
+            count="10"
+            interval="10"
+            max-interval="100"
+            delta="10"
+            first-fast-retry="false">
+                <forward-request buffer-request-body="true" />
+        </retry>
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
